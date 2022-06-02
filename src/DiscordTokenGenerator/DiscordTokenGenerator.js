@@ -86,7 +86,7 @@ const DiscordTokenGenerator = ({ accessToken }) => {
             <div>identify</div>
           </div>
         )) || (
-          <a href="http://localhost:5000/api/discord/login">
+          <a href="http://54.176.83.139:5000/api/discord/login">
             Login through Discord
           </a>
         )}
