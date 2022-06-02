@@ -130,6 +130,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
       try {
         shouldRun = false;
         const data = await getUserFollowingData(user, pagination_token);
+        // eslint-disable-next-line
         const isFollowing = data.data.some((user) => user.id == tweeterId);
         if (isFollowing) {
           return true;
@@ -163,7 +164,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
             : !data.entities.mentions
             ? false
             : data.entities.mentions.some(
-                (mention) => mention.username == handle
+                (mention) => mention.username === handle
               );
         });
 
@@ -194,7 +195,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
 
         const filteredData = data.data.filter((data) => {
           return data.referenced_tweets
-            ? data.referenced_tweets.some((tweet) => tweet.id == tweetId)
+            ? data.referenced_tweets.some((tweet) => tweet.id === tweetId)
             : false;
         });
 
@@ -233,6 +234,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
         setState({ ...state, user });
       })
       .catch(window.alert);
+    // eslint-disable-next-line
   }, []);
 
   const handleChange = ({ target: { value } }) => {
