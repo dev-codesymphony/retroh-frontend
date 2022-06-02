@@ -71,6 +71,7 @@ const DiscordTokenGenerator = ({ accessToken }) => {
           console.log(error);
         });
     }
+    // eslint-disable-next-line
   }, [qs]);
 
   return (
