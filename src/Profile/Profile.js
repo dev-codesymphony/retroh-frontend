@@ -47,7 +47,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
 
   useEffect(() => {
     const token = qs("token");
-    if (token && auth) {
+    if (token && !state.loading && !state.user) {
       fetch(`/users/verifyDiscord`, {
         body: JSON.stringify({
           token,
@@ -71,7 +71,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
         });
     }
     // eslint-disable-next-line
-  }, [qs]);
+  }, [state]);
 
   const logout = () => {
     (async () => {
