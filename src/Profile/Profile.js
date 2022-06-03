@@ -235,29 +235,29 @@ export const Profile = ({ auth, onLoggedOut }) => {
         />
       )}
 
+      {user && user.verifiedInDiscord ? null : (
+        <div>
+          <div>Get Discord Token</div>
+          <div>
+            {(qs("token") && (
+              <div>
+                <div>Your token</div>
+                <div>{qs("token")}</div>
+                <div>Scope</div>
+                <div>identify</div>
+              </div>
+            )) || (
+              <a
+                href={`${process.env.REACT_APP_BACKEND_URL}/api/discord/login`}
+              >
+                Login through Discord
+              </a>
+            )}
+          </div>
+        </div>
+      )}
       {isLoggedIn && (
         <>
-          {user && user.verifiedInDiscord ? null : (
-            <div>
-              <div>Get Discord Token</div>
-              <div>
-                {(qs("token") && (
-                  <div>
-                    <div>Your token</div>
-                    <div>{qs("token")}</div>
-                    <div>Scope</div>
-                    <div>identify</div>
-                  </div>
-                )) || (
-                  <a
-                    href={`${process.env.REACT_APP_BACKEND_URL}/api/discord/login`}
-                  >
-                    Login through Discord
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
           <div>
             <button
               className="Login-button Login-email"
