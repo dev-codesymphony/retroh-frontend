@@ -47,7 +47,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
 
   useEffect(() => {
     const token = qs("token");
-    if (token && !state.loading && !state.user) {
+    if (token && !state.loading && state.user) {
       fetch(`/users/verifyDiscord`, {
         body: JSON.stringify({
           token,
