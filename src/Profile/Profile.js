@@ -3,8 +3,15 @@ import axios from "axios";
 // import jwtDecode from "jwt-decode";
 import React, { useState, useEffect } from "react";
 import Blockies from "react-blockies";
-import DiscordTokenGenerator from "../DiscordTokenGenerator/DiscordTokenGenerator";
 import queryString from "query-string";
+
+const qs = (key) => {
+  key = key.replace(/[*+?^$.[\]{}()|\\/]/g, "\\$&"); // escape RegEx meta chars
+  const match = window.location.search.match(
+    new RegExp(`[?&]${key}=([^&]+)(&|$)`)
+  );
+  return match && decodeURIComponent(match[1].replace(/\+/g, " "));
+};
 
 export const Profile = ({ auth, onLoggedOut }) => {
   const [state, setState] = useState({
@@ -37,6 +44,34 @@ export const Profile = ({ auth, onLoggedOut }) => {
       }
     })();
   };
+
+  useEffect(() => {
+    const token = qs("token");
+    if (token) {
+      fetch(`/users/verifyDiscord`, {
+        body: JSON.stringify({
+          token,
+        }),
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.errorMsg) {
+            alert(res.errorMsg);
+          } else {
+            alert("Discord verified!");
+          }
+        })
+        .catch((error) => {
+          window.alert(error.message);
+        });
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const logout = () => {
     (async () => {
@@ -154,7 +189,6 @@ export const Profile = ({ auth, onLoggedOut }) => {
   const publicAddress = user && user.publicAddress;
   const _id = user && user._id;
   const arcadePoint = user && user.arcadePoint;
-  const verifiedInDiscord = user && user.verifiedInDiscord;
 
   const { accessToken } = auth;
 
@@ -202,132 +236,151 @@ export const Profile = ({ auth, onLoggedOut }) => {
       )}
 
       {isLoggedIn && (
-        <div>
-          <button
-            className="Login-button Login-email"
-            onClick={async () => {
-              fetch(`/users/twitterFollowed`, {
-                body: JSON.stringify({
-                  twitterFollowed: "founder",
-                  user: id_str,
-                }),
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  "Content-Type": "application/json",
-                },
-                method: "POST",
-              })
-                .then((response) => response.json())
-                .then((user) => alert("Earned 1 arcadePoint!"))
-                .catch((err) => {
-                  window.alert(err.message);
-                });
-            }}
-            disabled={
-              user &&
-              user.twitterFollowed &&
-              user.twitterFollowed.includes("founder")
-            }
-          >
-            Follow our Founder
-          </button>
-          <button
-            className="Login-button Login-email"
-            onClick={async () => {
-              fetch(`/users/twitterFollowed`, {
-                body: JSON.stringify({
-                  twitterFollowed: "official",
-                  user: id_str,
-                }),
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  "Content-Type": "application/json",
-                },
-                method: "POST",
-              })
-                .then((response) => response.json())
-                .then((user) => alert("Earned 1 arcadePoint!"))
-                .catch((err) => {
-                  window.alert(err.message);
-                });
-            }}
-            disabled={
-              user &&
-              user.twitterFollowed &&
-              user.twitterFollowed.includes("official")
-            }
-          >
-            Follow our offical account
-          </button>
-          <button
-            className="Login-button Login-email"
-            onClick={async () => {
-              fetch(`/users/twitterTweetedHandle`, {
-                body: JSON.stringify({
-                  user: id_str,
-                }),
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  "Content-Type": "application/json",
-                },
-                method: "POST",
-              })
-                .then((response) => response.json())
-                .then((user) => alert("Earned 1 arcadePoint!"))
-                .catch((err) => {
-                  window.alert(err.message);
-                });
-            }}
-            disabled={
-              user &&
-              user.twitterTweetedHandle &&
-              user.twitterTweetedHandle.length > 0
-            }
-          >
-            tweet at our handle
-          </button>
-          <button
-            className="Login-button Login-email"
-            onClick={async () => {
-              fetch(`/users/twitterRetweeted`, {
-                body: JSON.stringify({
-                  user: id_str,
-                }),
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  "Content-Type": "application/json",
-                },
-                method: "POST",
-              })
-                .then((response) => response.json())
-                .then((user) => alert("Earned 1 arcadePoint!"))
-                .catch((err) => {
-                  window.alert(err.message);
-                });
-            }}
-            disabled={
-              user && user.twitterRetweeted && user.twitterRetweeted.length > 0
-            }
-          >
-            retweet at specific tweet
-          </button>
+        <>
+          {user && user.verifiedInDiscord ? null : (
+            <div>
+              <div>Get Discord Token</div>
+              <div>
+                {(qs("token") && (
+                  <div>
+                    <div>Your token</div>
+                    <div>{qs("token")}</div>
+                    <div>Scope</div>
+                    <div>identify</div>
+                  </div>
+                )) || (
+                  <a
+                    href={`${process.env.REACT_APP_BACKEND_URL}/api/discord/login`}
+                  >
+                    Login through Discord
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
           <div>
-            <img alt="User profile" src={imageUrl} />
+            <button
+              className="Login-button Login-email"
+              onClick={async () => {
+                fetch(`/users/twitterFollowed`, {
+                  body: JSON.stringify({
+                    twitterFollowed: "founder",
+                    user: id_str,
+                  }),
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                  },
+                  method: "POST",
+                })
+                  .then((response) => response.json())
+                  .then((user) => alert("Earned 1 arcadePoint!"))
+                  .catch((err) => {
+                    window.alert(err.message);
+                  });
+              }}
+              disabled={
+                user &&
+                user.twitterFollowed &&
+                user.twitterFollowed.includes("founder")
+              }
+            >
+              Follow our Founder
+            </button>
+            <button
+              className="Login-button Login-email"
+              onClick={async () => {
+                fetch(`/users/twitterFollowed`, {
+                  body: JSON.stringify({
+                    twitterFollowed: "official",
+                    user: id_str,
+                  }),
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                  },
+                  method: "POST",
+                })
+                  .then((response) => response.json())
+                  .then((user) => alert("Earned 1 arcadePoint!"))
+                  .catch((err) => {
+                    window.alert(err.message);
+                  });
+              }}
+              disabled={
+                user &&
+                user.twitterFollowed &&
+                user.twitterFollowed.includes("official")
+              }
+            >
+              Follow our offical account
+            </button>
+            <button
+              className="Login-button Login-email"
+              onClick={async () => {
+                fetch(`/users/twitterTweetedHandle`, {
+                  body: JSON.stringify({
+                    user: id_str,
+                  }),
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                  },
+                  method: "POST",
+                })
+                  .then((response) => response.json())
+                  .then((user) => alert("Earned 1 arcadePoint!"))
+                  .catch((err) => {
+                    window.alert(err.message);
+                  });
+              }}
+              disabled={
+                user &&
+                user.twitterTweetedHandle &&
+                user.twitterTweetedHandle.length > 0
+              }
+            >
+              tweet at our handle
+            </button>
+            <button
+              className="Login-button Login-email"
+              onClick={async () => {
+                fetch(`/users/twitterRetweeted`, {
+                  body: JSON.stringify({
+                    user: id_str,
+                  }),
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
+                  },
+                  method: "POST",
+                })
+                  .then((response) => response.json())
+                  .then((user) => alert("Earned 1 arcadePoint!"))
+                  .catch((err) => {
+                    window.alert(err.message);
+                  });
+              }}
+              disabled={
+                user &&
+                user.twitterRetweeted &&
+                user.twitterRetweeted.length > 0
+              }
+            >
+              retweet at specific tweet
+            </button>
+            <div>
+              <img alt="User profile" src={imageUrl} />
+            </div>
+            <div>Name: {name}</div>
+            <div>URL: {url}</div>
+            <div>Status: {status}</div>
+            <button className="signout-btn" onClick={logout}>
+              Sign Out
+            </button>
           </div>
-          <div>Name: {name}</div>
-          <div>URL: {url}</div>
-          <div>Status: {status}</div>
-          <button className="signout-btn" onClick={logout}>
-            Sign Out
-          </button>
-        </div>
+        </>
       )}
-
-      <p>
-        {!verifiedInDiscord ? (
-          <DiscordTokenGenerator accessToken={accessToken} />
-        ) : null}
-      </p>
 
       <p>
         <button onClick={onLoggedOut}>Logout</button>
