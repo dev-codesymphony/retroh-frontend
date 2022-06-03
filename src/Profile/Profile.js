@@ -244,12 +244,15 @@ export const Profile = ({ auth, onLoggedOut }) => {
                     "Content-Type": "application/json",
                   },
                   method: "POST",
-                })
-                  .then((response) => response.json())
-                  .then((user) => alert("Earned 1 arcadePoint!"))
-                  .catch((err) => {
-                    window.alert(err.message);
-                  });
+                }).then((response) => {
+                  if (response.status === 200) {
+                    window.alert("Success");
+                  } else {
+                    const res = response.json().then((resp) => {
+                      window.alert(resp.message);
+                    });
+                  }
+                });
               }}
               disabled={
                 user &&
@@ -272,12 +275,15 @@ export const Profile = ({ auth, onLoggedOut }) => {
                     "Content-Type": "application/json",
                   },
                   method: "POST",
-                })
-                  .then((response) => response.json())
-                  .then((user) => alert("Earned 1 arcadePoint!"))
-                  .catch((err) => {
-                    window.alert(err.message);
-                  });
+                }).then((response) => {
+                  if (response.status === 200) {
+                    window.alert("Success");
+                  } else {
+                    const res = response.json().then((resp) => {
+                      window.alert(resp.message);
+                    });
+                  }
+                });
               }}
               disabled={
                 user &&
@@ -299,12 +305,15 @@ export const Profile = ({ auth, onLoggedOut }) => {
                     "Content-Type": "application/json",
                   },
                   method: "POST",
-                })
-                  .then((response) => response.json())
-                  .then((user) => alert("Earned 1 arcadePoint!"))
-                  .catch((err) => {
-                    window.alert(err.message);
-                  });
+                }).then((response) => {
+                  if (response.status === 200) {
+                    window.alert("Success");
+                  } else {
+                    const res = response.json().then((resp) => {
+                      window.alert(resp.message);
+                    });
+                  }
+                });
               }}
               disabled={
                 user &&
@@ -326,12 +335,15 @@ export const Profile = ({ auth, onLoggedOut }) => {
                     "Content-Type": "application/json",
                   },
                   method: "POST",
-                })
-                  .then((response) => response.json())
-                  .then((user) => alert("Earned 1 arcadePoint!"))
-                  .catch((err) => {
-                    window.alert(err.message);
-                  });
+                }).then((response) => {
+                  if (response.status === 200) {
+                    window.alert("Success");
+                  } else {
+                    const res = response.json().then((resp) => {
+                      window.alert(resp.message);
+                    });
+                  }
+                });
               }}
               disabled={
                 user &&
