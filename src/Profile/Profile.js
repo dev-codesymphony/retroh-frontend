@@ -93,131 +93,6 @@ export const Profile = ({ auth, onLoggedOut }) => {
     })();
   }, []);
 
-  const getUserFollowingData = async (user, pagination_token = null) => {
-    let url = `https://corsanywhere.herokuapp.com/https://api.twitter.com/2/users/${user}/following`;
-    if (pagination_token) {
-      url += `&pagination_token=${pagination_token}`;
-    }
-    const { data } = await axios({
-      url: url,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`,
-      },
-    });
-    return data;
-  };
-
-  const getUserTweetsData = async (user, pagination_token = null) => {
-    let url = `https://corsanywhere.herokuapp.com/https://api.twitter.com/2/users/${user}/tweets/?tweet.fields=entities,id,in_reply_to_user_id,referenced_tweets,text`;
-    if (pagination_token) {
-      url += `&pagination_token=${pagination_token}`;
-    }
-    const { data } = await axios({
-      url: url,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`,
-      },
-    });
-    return data;
-  };
-
-  const isFollowing = async function (user, tweeterId) {
-    let pagination_token = null;
-    let shouldRun;
-    do {
-      try {
-        shouldRun = false;
-        const data = await getUserFollowingData(user, pagination_token);
-        // eslint-disable-next-line
-        const isFollowing = data.data.some((user) => user.id == tweeterId);
-        if (isFollowing) {
-          return true;
-        } else {
-          if (data.meta && data.meta.next_token) {
-            pagination_token = data.meta.next_token;
-            shouldRun = true;
-          } else {
-            return false;
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    } while (shouldRun);
-  };
-
-  const hasRetweetedHandle = async function (user, handle) {
-    let pagination_token = null;
-    let shouldRun = false;
-    do {
-      try {
-        shouldRun = false;
-        const data = await getUserTweetsData(user, pagination_token);
-
-        const filteredData = data.data.filter((data) => {
-          return !data.entities
-            ? false
-              ? data.entities.referenced_tweets
-              : false
-            : !data.entities.mentions
-            ? false
-            : data.entities.mentions.some(
-                (mention) => mention.username === handle
-              );
-        });
-
-        const hasRetweetedHandle = filteredData.length > 0;
-        if (hasRetweetedHandle) {
-          return true;
-        } else {
-          if (data.meta && data.meta.next_token) {
-            pagination_token = data.meta.next_token;
-            shouldRun = true;
-          } else {
-            return false;
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    } while (shouldRun);
-  };
-
-  const hasTwitterRetweeted = async function (user, tweetId) {
-    let pagination_token = null;
-    let shouldRun = false;
-    do {
-      try {
-        shouldRun = false;
-        const data = await getUserTweetsData(user, pagination_token);
-
-        const filteredData = data.data.filter((data) => {
-          return data.referenced_tweets
-            ? data.referenced_tweets.some((tweet) => tweet.id === tweetId)
-            : false;
-        });
-
-        console.log("filteredData", filteredData);
-
-        const hasRetweetedTweet = filteredData.length > 0;
-        if (hasRetweetedTweet) {
-          return true;
-        } else {
-          if (data.meta && data.meta.next_token) {
-            pagination_token = data.meta.next_token;
-            shouldRun = true;
-          } else {
-            return false;
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    } while (shouldRun);
-  };
-
   useEffect(() => {
     const { accessToken } = auth;
     // const {
@@ -337,27 +212,22 @@ export const Profile = ({ auth, onLoggedOut }) => {
                 <button
                   className="Login-button Login-email"
                   onClick={async () => {
-                    const isFollowed = await isFollowing(id_str, account);
-                    console.log("followed: " + isFollowed);
-                    if (isFollowed) {
-                      fetch(`/users/twitterFollowed`, {
-                        body: JSON.stringify({ twitterFollowed: account }),
-                        headers: {
-                          Authorization: `Bearer ${accessToken}`,
-                          "Content-Type": "application/json",
-                        },
-                        method: "POST",
-                      })
-                        .then((response) => response.json())
-                        .then((user) => alert("Earned 1 arcadePoint!"))
-                        .catch((err) => {
-                          window.alert(err);
-                        });
-                    } else {
-                      window.alert(
-                        "Try again, You are not following this account"
-                      );
-                    }
+                    fetch(`/users/twitterFollowed`, {
+                      body: JSON.stringify({
+                        twitterFollowed: account,
+                        user: id_str,
+                      }),
+                      headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                      },
+                      method: "POST",
+                    })
+                      .then((response) => response.json())
+                      .then((user) => alert("Earned 1 arcadePoint!"))
+                      .catch((err) => {
+                        window.alert(err.message);
+                      });
                   }}
                   disabled={
                     user &&
@@ -365,7 +235,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
                     user.twitterFollowed.includes(account)
                   }
                 >
-                  Follow our founder
+                  Follow our {account}
                 </button>
               );
             })}
@@ -375,32 +245,22 @@ export const Profile = ({ auth, onLoggedOut }) => {
                 <button
                   className="Login-button Login-email"
                   onClick={async () => {
-                    const retweetedHandle = await hasRetweetedHandle(
-                      id_str,
-                      handle
-                    );
-                    console.log("retweetedHandle: " + retweetedHandle);
-                    if (retweetedHandle) {
-                      fetch(`/users/twitterTweetedHandle`, {
-                        body: JSON.stringify({
-                          tweetedHandle: handle,
-                        }),
-                        headers: {
-                          Authorization: `Bearer ${accessToken}`,
-                          "Content-Type": "application/json",
-                        },
-                        method: "POST",
-                      })
-                        .then((response) => response.json())
-                        .then((user) => alert("Earned 1 arcadePoint!"))
-                        .catch((err) => {
-                          window.alert(err);
-                        });
-                    } else {
-                      window.alert(
-                        "Try again, You had not retweeted this handle"
-                      );
-                    }
+                    fetch(`/users/twitterTweetedHandle`, {
+                      body: JSON.stringify({
+                        tweetedHandle: handle,
+                        user: id_str,
+                      }),
+                      headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                      },
+                      method: "POST",
+                    })
+                      .then((response) => response.json())
+                      .then((user) => alert("Earned 1 arcadePoint!"))
+                      .catch((err) => {
+                        window.alert(err.message);
+                      });
                   }}
                   disabled={
                     user &&
@@ -419,30 +279,22 @@ export const Profile = ({ auth, onLoggedOut }) => {
                 <button
                   className="Login-button Login-email"
                   onClick={async () => {
-                    const twitterRetweeted = await hasTwitterRetweeted(
-                      id_str,
-                      tweet
-                    );
-                    console.log("twitterRetweeted: " + twitterRetweeted);
-                    if (twitterRetweeted) {
-                      fetch(`/users/twitterRetweeted`, {
-                        body: JSON.stringify({
-                          twitterRetweeted: tweet,
-                        }),
-                        headers: {
-                          Authorization: `Bearer ${accessToken}`,
-                          "Content-Type": "application/json",
-                        },
-                        method: "POST",
-                      })
-                        .then((response) => response.json())
-                        .then((user) => alert("Earned 1 arcadePoint!"))
-                        .catch((err) => {
-                          window.alert(err);
-                        });
-                    } else {
-                      window.alert("Try again, You had not retweeted this ");
-                    }
+                    fetch(`/users/twitterRetweeted`, {
+                      body: JSON.stringify({
+                        twitterRetweeted: tweet,
+                        user: id_str,
+                      }),
+                      headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                      },
+                      method: "POST",
+                    })
+                      .then((response) => response.json())
+                      .then((user) => alert("Earned 1 arcadePoint!"))
+                      .catch((err) => {
+                        window.alert(err.message);
+                      });
                   }}
                   disabled={
                     user &&
