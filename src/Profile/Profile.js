@@ -20,6 +20,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
     username: "",
   });
 
+  const [called, setCalled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [name, setName] = useState();
   const [imageUrl, setImageUrl] = useState();
@@ -47,7 +48,8 @@ export const Profile = ({ auth, onLoggedOut }) => {
 
   useEffect(() => {
     const token = qs("token");
-    if (token) {
+    if (token && !called) {
+      setCalled(true);
       fetch(`/users/verifyDiscord`, {
         body: JSON.stringify({
           token,
