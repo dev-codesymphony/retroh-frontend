@@ -25,15 +25,15 @@ const DiscordTokenGenerator = ({ accessToken }) => {
         .then((res) => res.json())
         .then((res) => {
           if (res.errorMsg) {
-            alert(res.error);
+            alert(res.errorMsg);
           }
           if (res.publicAddress) {
             alert("Discord verified!");
           }
-        })
-        .catch((error) => {
-          // window.alert(error.message);
         });
+      // .catch((error) => {
+      //   // window.alert(error.message);
+      // });
     }
     // eslint-disable-next-line
   }, []);
