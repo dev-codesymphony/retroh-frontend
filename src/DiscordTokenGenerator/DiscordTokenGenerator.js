@@ -24,14 +24,19 @@ const DiscordTokenGenerator = ({ accessToken }) => {
       })
         .then((res) => res.json())
         .then((res) => {
-          alert("You have successfully verified your Discord!");
+          if (res.errorMsg) {
+            alert(res.error);
+          }
+          if (res.publicAddress) {
+            alert("Discord verified!");
+          }
         })
         .catch((error) => {
-          alert(error.message);
+          // window.alert(error.message);
         });
     }
     // eslint-disable-next-line
-  }, [qs]);
+  }, []);
 
   return (
     <div>
