@@ -45,34 +45,6 @@ export const Profile = ({ auth, onLoggedOut }) => {
     })();
   };
 
-  useEffect(() => {
-    const token = qs("token");
-    if (token && !state.loading && state.user) {
-      fetch(`/users/verifyDiscord`, {
-        body: JSON.stringify({
-          token,
-        }),
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.errorMsg) {
-            alert(res.errorMsg);
-          } else {
-            alert("Discord verified!");
-          }
-        })
-        .catch((error) => {
-          window.alert(error.message);
-        });
-    }
-    // eslint-disable-next-line
-  }, [state]);
-
   const logout = () => {
     (async () => {
       try {

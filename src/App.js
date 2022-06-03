@@ -8,6 +8,14 @@ import logo from "./logo.svg";
 
 const LS_KEY = "login-with-metamask:auth";
 
+const qs = (key) => {
+  key = key.replace(/[*+?^$.[\]{}()|\\/]/g, "\\$&"); // escape RegEx meta chars
+  const match = window.location.search.match(
+    new RegExp(`[?&]${key}=([^&]+)(&|$)`)
+  );
+  return match && decodeURIComponent(match[1].replace(/\+/g, " "));
+};
+
 const App = () => {
   const [state, setState] = useState({});
 
@@ -27,6 +35,26 @@ const App = () => {
     localStorage.removeItem(LS_KEY);
     setState({ auth: undefined });
   };
+
+  useEffect(() => {
+    const token = qs("token");
+
+    if (token && state.auth.accessToken) {
+      fetch(`/users/verifyDiscord`, {
+        body: JSON.stringify({
+          token,
+        }),
+        headers: {
+          Authorization: `Bearer ${state.auth.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      })
+        .then((res) => res.json())
+        .then((res) => {});
+    }
+    // eslint-disable-next-line
+  }, [qs]);
 
   const { auth } = state;
 
