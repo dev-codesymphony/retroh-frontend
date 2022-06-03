@@ -5,9 +5,9 @@ import React, { useState, useEffect } from "react";
 import Blockies from "react-blockies";
 import DiscordTokenGenerator from "../DiscordTokenGenerator/DiscordTokenGenerator";
 import queryString from "query-string";
-import specificAccounts from "./specificAccounts";
-import handles from "./handles";
-import tweets from "./tweets";
+import Accounts from "./Accounts";
+import Handles from "./Handles";
+import Tweets from "./Tweets";
 
 export const Profile = ({ auth, onLoggedOut }) => {
   const [state, setState] = useState({
@@ -331,8 +331,8 @@ export const Profile = ({ auth, onLoggedOut }) => {
 
       {isLoggedIn && (
         <div>
-          {specificAccounts &&
-            specificAccounts.map((account) => {
+          {Accounts &&
+            Accounts.map((account) => {
               return (
                 <button
                   className="Login-button Login-email"
@@ -369,8 +369,8 @@ export const Profile = ({ auth, onLoggedOut }) => {
                 </button>
               );
             })}
-          {handles &&
-            handles.map((handle) => {
+          {Handles &&
+            Handles.map((handle) => {
               return (
                 <button
                   className="Login-button Login-email"
@@ -413,8 +413,8 @@ export const Profile = ({ auth, onLoggedOut }) => {
               );
             })}
 
-          {tweets &&
-            tweets.map((tweet) => {
+          {Tweets &&
+            Tweets.map((tweet) => {
               return (
                 <button
                   className="Login-button Login-email"

@@ -1,2 +1,2 @@
-const tweets = ["1048541375577423873"];
-export default tweets;
+const Tweets = process.env.REACT_APP_TWEETS.split(",");
+export default Tweets;

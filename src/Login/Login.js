@@ -86,24 +86,27 @@ export const Login = ({ onLoggedIn }) => {
       return;
     }
 
-    const publicAddress = coinbase.toLowerCase();
+    const publicAddress = await coinbase.toLowerCase();
     setLoading(true);
 
-    // Look if user with current publicAddress is already present on backend
-    fetch(`/users?publicAddress=${publicAddress}`)
-      .then((response) => response.json())
-      // If yes, retrieve it. If no, create it.
-      .then((users) => (users.length ? users[0] : handleSignup(publicAddress)))
-      // Popup MetaMask confirmation modal to sign message
-      .then(handleSignMessage)
-      // Send signature to backend on the /auth route
-      .then(handleAuthenticate)
-      // Pass accessToken back to parent component (to save it in localStorage)
-      .then(onLoggedIn)
-      .catch((err) => {
-        window.alert(err);
-        setLoading(false);
-      });
+    publicAddress &&
+      // Look if user with current publicAddress is already present on backend
+      fetch(`/users?publicAddress=${publicAddress}`)
+        .then((response) => response.json())
+        // If yes, retrieve it. If no, create it.
+        .then((users) =>
+          users.length ? users[0] : handleSignup(publicAddress)
+        )
+        // Popup MetaMask confirmation modal to sign message
+        .then(handleSignMessage)
+        // Send signature to backend on the /auth route
+        .then(handleAuthenticate)
+        // Pass accessToken back to parent component (to save it in localStorage)
+        .then(onLoggedIn)
+        .catch((err) => {
+          window.alert(err);
+          setLoading(false);
+        });
   };
 
   return (
