@@ -71,7 +71,7 @@ export const Profile = ({ auth, onLoggedOut }) => {
         });
     }
     // eslint-disable-next-line
-  }, []);
+  }, [qs]);
 
   const logout = () => {
     (async () => {
