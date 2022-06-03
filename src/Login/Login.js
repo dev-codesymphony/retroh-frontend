@@ -104,7 +104,7 @@ export const Login = ({ onLoggedIn }) => {
         // Pass accessToken back to parent component (to save it in localStorage)
         .then(onLoggedIn)
         .catch((err) => {
-          window.alert(err);
+          // window.alert(err);
           setLoading(false);
         });
   };
@@ -119,7 +119,6 @@ export const Login = ({ onLoggedIn }) => {
       <button className="Login-button Login-mm" onClick={handleClick}>
         {loading ? "Loading..." : "Login with MetaMask"}
       </button>
-
     </div>
   );
 };
