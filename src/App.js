@@ -51,7 +51,15 @@ const App = () => {
         method: "POST",
       })
         .then((res) => res.json())
-        .then((res) => {});
+        .then((res) => {
+          if (res.errorMsg) {
+            alert(res.errorMsg);
+          } else {
+            if (res.publicAddress) {
+              alert("Verified discord account");
+            }
+          }
+        });
     }
     // eslint-disable-next-line
   }, [qs]);
