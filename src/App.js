@@ -62,7 +62,7 @@ const App = () => {
         });
     }
     // eslint-disable-next-line
-  }, [qs]);
+  }, [qs, state]);
 
   const { auth } = state;
 
