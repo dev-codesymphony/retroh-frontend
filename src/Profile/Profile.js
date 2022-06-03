@@ -5,9 +5,6 @@ import React, { useState, useEffect } from "react";
 import Blockies from "react-blockies";
 import DiscordTokenGenerator from "../DiscordTokenGenerator/DiscordTokenGenerator";
 import queryString from "query-string";
-import Accounts from "./AccountsArray";
-import Handles from "./HandlesArray";
-import Tweets from "./TweetsArray";
 
 export const Profile = ({ auth, onLoggedOut }) => {
   const [state, setState] = useState({
@@ -206,107 +203,114 @@ export const Profile = ({ auth, onLoggedOut }) => {
 
       {isLoggedIn && (
         <div>
-          {Accounts &&
-            Accounts.map((account) => {
-              return (
-                <button
-                  className="Login-button Login-email"
-                  onClick={async () => {
-                    fetch(`/users/twitterFollowed`, {
-                      body: JSON.stringify({
-                        twitterFollowed: account,
-                        user: id_str,
-                      }),
-                      headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Type": "application/json",
-                      },
-                      method: "POST",
-                    })
-                      .then((response) => response.json())
-                      .then((user) => alert("Earned 1 arcadePoint!"))
-                      .catch((err) => {
-                        window.alert(err.message);
-                      });
-                  }}
-                  disabled={
-                    user &&
-                    user.twitterFollowed &&
-                    user.twitterFollowed.includes(account)
-                  }
-                >
-                  Follow our {account}
-                </button>
-              );
-            })}
-          {Handles &&
-            Handles.map((handle) => {
-              return (
-                <button
-                  className="Login-button Login-email"
-                  onClick={async () => {
-                    fetch(`/users/twitterTweetedHandle`, {
-                      body: JSON.stringify({
-                        tweetedHandle: handle,
-                        user: id_str,
-                      }),
-                      headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Type": "application/json",
-                      },
-                      method: "POST",
-                    })
-                      .then((response) => response.json())
-                      .then((user) => alert("Earned 1 arcadePoint!"))
-                      .catch((err) => {
-                        window.alert(err.message);
-                      });
-                  }}
-                  disabled={
-                    user &&
-                    user.twitterTweetedHandle &&
-                    user.twitterTweetedHandle.includes(handle)
-                  }
-                >
-                  tweet at our handle
-                </button>
-              );
-            })}
-
-          {Tweets &&
-            Tweets.map((tweet) => {
-              return (
-                <button
-                  className="Login-button Login-email"
-                  onClick={async () => {
-                    fetch(`/users/twitterRetweeted`, {
-                      body: JSON.stringify({
-                        twitterRetweeted: tweet,
-                        user: id_str,
-                      }),
-                      headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Type": "application/json",
-                      },
-                      method: "POST",
-                    })
-                      .then((response) => response.json())
-                      .then((user) => alert("Earned 1 arcadePoint!"))
-                      .catch((err) => {
-                        window.alert(err.message);
-                      });
-                  }}
-                  disabled={
-                    user &&
-                    user.twitterRetweeted &&
-                    user.twitterRetweeted.includes(tweet)
-                  }
-                >
-                  retweet at specific tweet
-                </button>
-              );
-            })}
-
+          <button
+            className="Login-button Login-email"
+            onClick={async () => {
+              fetch(`/users/twitterFollowed`, {
+                body: JSON.stringify({
+                  twitterFollowed: "founder",
+                  user: id_str,
+                }),
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                  "Content-Type": "application/json",
+                },
+                method: "POST",
+              })
+                .then((response) => response.json())
+                .then((user) => alert("Earned 1 arcadePoint!"))
+                .catch((err) => {
+                  window.alert(err.message);
+                });
+            }}
+            disabled={
+              user &&
+              user.twitterFollowed &&
+              user.twitterFollowed.includes("founder")
+            }
+          >
+            Follow our Founder
+          </button>
+          <button
+            className="Login-button Login-email"
+            onClick={async () => {
+              fetch(`/users/twitterFollowed`, {
+                body: JSON.stringify({
+                  twitterFollowed: "official",
+                  user: id_str,
+                }),
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                  "Content-Type": "application/json",
+                },
+                method: "POST",
+              })
+                .then((response) => response.json())
+                .then((user) => alert("Earned 1 arcadePoint!"))
+                .catch((err) => {
+                  window.alert(err.message);
+                });
+            }}
+            disabled={
+              user &&
+              user.twitterFollowed &&
+              user.twitterFollowed.includes("official")
+            }
+          >
+            Follow our offical account
+          </button>
+          <button
+            className="Login-button Login-email"
+            onClick={async () => {
+              fetch(`/users/twitterTweetedHandle`, {
+                body: JSON.stringify({
+                  user: id_str,
+                }),
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                  "Content-Type": "application/json",
+                },
+                method: "POST",
+              })
+                .then((response) => response.json())
+                .then((user) => alert("Earned 1 arcadePoint!"))
+                .catch((err) => {
+                  window.alert(err.message);
+                });
+            }}
+            disabled={
+              user &&
+              user.twitterTweetedHandle &&
+              user.twitterTweetedHandle.length > 0
+            }
+          >
+            tweet at our handle
+          </button>
+          <button
+            className="Login-button Login-email"
+            onClick={async () => {
+              fetch(`/users/twitterRetweeted`, {
+                body: JSON.stringify({
+                  user: id_str,
+                }),
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                  "Content-Type": "application/json",
+                },
+                method: "POST",
+              })
+                .then((response) => response.json())
+                .then((user) => alert("Earned 1 arcadePoint!"))
+                .catch((err) => {
+                  window.alert(err.message);
+                });
+            }}
+            disabled={
+              user && user.twitterRetweeted && user.twitterRetweeted.length > 0
+            }
+          >
+            retweet at specific tweet
+          </button>
           <div>
             <img alt="User profile" src={imageUrl} />
           </div>
