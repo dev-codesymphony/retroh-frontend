@@ -119,12 +119,7 @@ export const Login = ({ onLoggedIn }) => {
       <button className="Login-button Login-mm" onClick={handleClick}>
         {loading ? "Loading..." : "Login with MetaMask"}
       </button>
-      <button className="Login-button Login-fb" disabled>
-        Login with Facebook
-      </button>
-      <button className="Login-button Login-email" disabled>
-        Login with Email
-      </button>
+
     </div>
   );
 };
