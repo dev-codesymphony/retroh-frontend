@@ -39,7 +39,7 @@ const App = () => {
   useEffect(() => {
     const token = qs("token");
 
-    if (token && state.auth.accessToken) {
+    if (token && state && state.auth && state.auth.accessToken) {
       fetch(`/users/verifyDiscord`, {
         body: JSON.stringify({
           token,
