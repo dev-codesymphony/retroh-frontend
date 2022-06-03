@@ -5,9 +5,9 @@ import React, { useState, useEffect } from "react";
 import Blockies from "react-blockies";
 import DiscordTokenGenerator from "../DiscordTokenGenerator/DiscordTokenGenerator";
 import queryString from "query-string";
-import Accounts from "./Accounts";
-import Handles from "./Handles";
-import Tweets from "./Tweets";
+import Accounts from "./AccountsArray";
+import Handles from "./HandlesArray";
+import Tweets from "./TweetsArray";
 
 export const Profile = ({ auth, onLoggedOut }) => {
   const [state, setState] = useState({
